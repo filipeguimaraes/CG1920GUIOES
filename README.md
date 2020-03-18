@@ -1,1 +1,1 @@
-# CG1920GUIOES
+# Repositório para os guiões de CG
