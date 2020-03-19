@@ -99,8 +99,6 @@ void changeSize(int w, int h) {
 }
 
 
-
-
 void teapots(){
     clock_t atual = clock();
 
@@ -108,7 +106,6 @@ void teapots(){
     double sec_rad = sec * 2.0 * M_PI;
 
     double rotate = ( 360.0 / 8.0 ) ;
-    double trans_rot = ( 1.0 / 8.0 ) * 2 * M_PI;
     double raio = 15.0;
 
     glPushMatrix();
@@ -118,9 +115,8 @@ void teapots(){
     for (int i = 0; i < 8; i++){
         glPushMatrix();
 
-        glTranslatef(raio * cos((double) i * trans_rot + sec_rad), 0,
-                     raio * sin((double) i * trans_rot + sec_rad));
         glRotatef((double) -i * rotate - sec * 360.0 , 0, 1.0f, 0);
+        glTranslatef(raio,0,0);
 
         glutSolidTeapot(2);
         glPopMatrix();
@@ -128,7 +124,6 @@ void teapots(){
 
 
     rotate = ( 360.0 / 16.0 );
-    trans_rot = ( 1.0 / 16.0 ) * 2 * M_PI;
     raio = 35.0;
 
     glColor3f(1, 0, 0);
@@ -136,9 +131,8 @@ void teapots(){
     for (int i = 0; i < 16; i++){
         glPushMatrix();
 
-        glTranslatef(raio * cos((double) i * trans_rot - sec_rad), 0,
-                     raio * sin((double) i * trans_rot - sec_rad));
         glRotatef((double) -i * rotate + sec * 360.0 , 0, 1.0f, 0);
+        glTranslatef(raio,0,0);
 
         glutSolidTeapot(2);
         glPopMatrix();
