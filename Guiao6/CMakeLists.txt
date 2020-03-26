@@ -51,7 +51,7 @@ if  (WIN32)
 	 
 else (WIN32) #Linux and Mac
 
-	set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} Wno-deprecated")
+	set( CMAKE_CXX_FLAGSï¿½ "${CMAKE_CXX_FLAGS} Wno-deprecated")
 	find_package(GLUT REQUIRED)
 	include_directories(${GLUT_INCLUDE_DIR})
 	link_directories(${GLUT_LIBRARY_DIRS})
@@ -67,7 +67,7 @@ else (WIN32) #Linux and Mac
 	link_libraries(${IL_LIBRARIES} )
 	include_directories(${IL_INCLUDE_DIR})
 
-	target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${IL_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} ${IL_LIBRARIES})
 	if(NOT GLUT_FOUND)
 	   message(ERROR ": GLUT not found!")
 	endif(NOT GLUT_FOUND)
