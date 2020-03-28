@@ -62,7 +62,6 @@ float h(int x, int z) {
     int xx = x + 128;
     int zz = z + 128;
     height = (float) imageData[xx * zz] * escala;
-    printf("size: %f\n",(float) imageData[xx * zz] );
     return height;
 }
 
@@ -176,7 +175,6 @@ void processMouseButtons(int button, int state, int xx, int yy) {
         }
         tracking = 0;
     }
-    glutPostRedisplay();
 }
 
 
@@ -251,9 +249,9 @@ void init() {
     prepareData();
 
 // 	OpenGL settings
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 
@@ -269,7 +267,7 @@ int main(int argc, char **argv) {
 
 // Required callback registry 
     glutDisplayFunc(renderScene);
-    //glutIdleFunc(renderScene);
+    glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
 
 // Callback registration for keyboard processing
