@@ -56,28 +56,43 @@ void changeSize(int w, int h) {
 }
 
 void prepareData() {
+    glewInit();
     glEnableClientState(GL_VERTEX_ARRAY);
     glGenBuffers(1, buffers);
 
-    vertexB = (float *) malloc(256 * 256 * 3 * 3 * 2 * sizeof(float));
+    vertexB = (float *) malloc(256 * 256 * 9 * sizeof(float));
     int indice = 0;
     float posicaox = -128;
     float posicaoz = -128;
 
 
-    for (int i = 0; i < 256; i++) {
-        for(int j = 0; j < 256; j++) {
-            vertexB[indice] = posicaox; vertexB[indice + 1] = 0; vertexB[indice + 2] = posicaoz;
-            vertexB[indice + 3] = 1 + posicaox; vertexB[indice + 4] = 0; vertexB[indice + 5] = 1 + posicaoz;
-            vertexB[indice + 6] = 1 + posicaox; vertexB[indice + 7] = 0; vertexB[indice + 8] = posicaoz;
-            indice += 9;
-            vertexB[indice] = posicaox; vertexB[indice + 1] = 0; vertexB[indice + 2] = posicaoz;
-            vertexB[indice + 3] = posicaox; vertexB[indice + 4] = 0; vertexB[indice + 5] = 1 + posicaoz;
-            vertexB[indice + 6] = 1 + posicaox; vertexB[indice + 7] = 0; vertexB[indice + 8] = 1 + posicaoz;
-            indice += 9;
+    for (int i = 0; i < th; ++i) {
+
+        vertexB[indice] = posicaox;
+        vertexB[indice + 1] = 0;
+        vertexB[indice + 2] = posicaoz;
+        indice += 3;
+
+        for (int j = 0; j < tw; ++j) {
+            vertexB[indice] = posicaox;
+            vertexB[indice + 1] = 0;
+            vertexB[indice + 2] = posicaoz + 1;
+            indice += 3;
+
+            vertexB[indice] = posicaox + 1;
+            vertexB[indice + 1] = 0;
+            vertexB[indice + 2] = posicaoz;
+            indice += 3;
+
             posicaox++;
-            printf("indice: %d\n", indice);
         }
+
+        vertexB[indice] = posicaox;
+        vertexB[indice + 1] = 0;
+        vertexB[indice + 2] = posicaoz + 1;
+        printf("indice: %d\n", indice);
+        indice += 3;
+
         posicaox = -128;
         posicaoz++;
     }
@@ -86,13 +101,15 @@ void prepareData() {
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, indice * sizeof(float), vertexB, GL_STATIC_DRAW);
 
+    free(vertexB);
 }
 
 void drawTerrain() {
-    // colocar aqui o código de desnho do terreno usando VBOs com TRIANGLE_STRIPS
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glVertexPointer(3, GL_FLOAT, 0, 0);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0,256 * 256);
+    for (int i = 0; i < th - 1; i++) {
+        glDrawArrays(GL_TRIANGLE_STRIP, (tw) * 2 * i, (tw) * 2);
+    }
 }
 
 
@@ -112,7 +129,7 @@ void renderScene(void) {
 
     // just so that it renders something before the terrain is built
     // to erase when the terrain is ready
-    glutWireTeapot(2.0);
+    //glutWireTeapot(2.0);
 
 // End of frame
     glutSwapBuffers();
@@ -246,7 +263,6 @@ int main(int argc, char **argv) {
     glutKeyboardFunc(processKeys);
     glutMouseFunc(processMouseButtons);
     glutMotionFunc(processMouseMotion);
-
 
 
     init();
