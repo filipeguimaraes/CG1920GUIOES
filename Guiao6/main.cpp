@@ -61,7 +61,7 @@ float h(int x, int z) {
     float escala = 30.0 / 255;
     int xx = x + 128;
     int zz = z + 128;
-    height = (float) imageData[xx * zz] * escala;
+    height = (float) imageData[xx + (zz * 256)] * escala;
     return height;
 }
 
@@ -76,30 +76,30 @@ void prepareData() {
     int posicaoz = -128;
 
 
-    for (int i = 0; i < th - 1 ; ++i) {
+    for (int i = 0; i < th - 1; ++i) {
 
-        vertexB[indice] = (float)posicaox;
-        vertexB[indice + 1] = h(posicaox,posicaoz);
-        vertexB[indice + 2] = (float)posicaoz;
+        vertexB[indice] = (float) posicaox;
+        vertexB[indice + 1] = h(posicaox, posicaoz);
+        vertexB[indice + 2] = (float) posicaoz;
         indice += 3;
 
-        for (int j = 0; j < tw -1 ; ++j) {
-            vertexB[indice] = (float)posicaox;
-            vertexB[indice + 1] = h(posicaox,posicaoz+1);
-            vertexB[indice + 2] = (float)posicaoz + 1;
+        for (int j = 0; j < tw - 1; ++j) {
+            vertexB[indice] = (float) posicaox;
+            vertexB[indice + 1] = h(posicaox, posicaoz + 1);
+            vertexB[indice + 2] = (float) posicaoz + 1;
             indice += 3;
 
-            vertexB[indice] = (float)posicaox + 1;
-            vertexB[indice + 1] = h(posicaox+1,posicaoz);
-            vertexB[indice + 2] = (float)posicaoz;
+            vertexB[indice] = (float) posicaox + 1;
+            vertexB[indice + 1] = h(posicaox + 1, posicaoz);
+            vertexB[indice + 2] = (float) posicaoz;
             indice += 3;
 
             posicaox++;
         }
 
-        vertexB[indice] = (float)posicaox;
-        vertexB[indice + 1] = h(posicaox,posicaoz+1);
-        vertexB[indice + 2] = (float)posicaoz + 1;
+        vertexB[indice] = (float) posicaox;
+        vertexB[indice + 1] = h(posicaox, posicaoz + 1);
+        vertexB[indice + 2] = (float) posicaoz + 1;
         indice += 3;
 
         posicaox = -128;
@@ -249,9 +249,9 @@ void init() {
     prepareData();
 
 // 	OpenGL settings
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
-    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 
