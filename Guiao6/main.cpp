@@ -61,7 +61,7 @@ float h(int x, int z) {
     float escala = 30.0 / 255;
     int xx = x + 128;
     int zz = z + 128;
-    height = (float) imageData[xx + (zz * 256)] * escala;
+    height = (float) imageData[xx + (zz * tw)] * escala;
     return height;
 }
 
