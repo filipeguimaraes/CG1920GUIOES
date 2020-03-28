@@ -28,6 +28,7 @@ int alpha = 0, beta = 45, r = 50;
 unsigned int t, tw, th;
 unsigned char *imageData;
 
+int color = 0;
 float *vertexB;
 GLuint buffers[1];
 
@@ -55,6 +56,16 @@ void changeSize(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+float h(int x, int z) {
+    float height = 0;
+    float escala = 30.0 / 255;
+    int xx = x + 128;
+    int zz = z + 128;
+    height = (float) imageData[xx * zz] * escala;
+
+    return height;
+}
+
 void prepareData() {
     glewInit();
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -69,18 +80,18 @@ void prepareData() {
     for (int i = 0; i < th; ++i) {
 
         vertexB[indice] = posicaox;
-        vertexB[indice + 1] = 0;
+        vertexB[indice + 1] = h(posicaox, posicaoz);
         vertexB[indice + 2] = posicaoz;
         indice += 3;
 
         for (int j = 0; j < tw; ++j) {
             vertexB[indice] = posicaox;
-            vertexB[indice + 1] = 0;
+            vertexB[indice + 1] = h(posicaox, posicaoz + 1);
             vertexB[indice + 2] = posicaoz + 1;
             indice += 3;
 
             vertexB[indice] = posicaox + 1;
-            vertexB[indice + 1] = 0;
+            vertexB[indice + 1] = h(posicaox + 1, posicaoz);
             vertexB[indice + 2] = posicaoz;
             indice += 3;
 
@@ -88,9 +99,8 @@ void prepareData() {
         }
 
         vertexB[indice] = posicaox;
-        vertexB[indice + 1] = 0;
+        vertexB[indice + 1] = h(posicaox, posicaoz + 1);
         vertexB[indice + 2] = posicaoz + 1;
-        printf("indice: %d\n", indice);
         indice += 3;
 
         posicaox = -128;
@@ -107,6 +117,7 @@ void prepareData() {
 void drawTerrain() {
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glVertexPointer(3, GL_FLOAT, 0, 0);
+    glColor3f(0.42, 0.57, 0.6);
     for (int i = 0; i < th - 1; i++) {
         glDrawArrays(GL_TRIANGLE_STRIP, (tw) * 2 * i, (tw) * 2);
     }
@@ -165,6 +176,7 @@ void processMouseButtons(int button, int state, int xx, int yy) {
         }
         tracking = 0;
     }
+    glutPostRedisplay();
 }
 
 
@@ -256,7 +268,7 @@ int main(int argc, char **argv) {
 
 // Required callback registry 
     glutDisplayFunc(renderScene);
-    glutIdleFunc(renderScene);
+    //glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
 
 // Callback registration for keyboard processing
