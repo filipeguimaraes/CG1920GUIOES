@@ -62,7 +62,7 @@ float h(int x, int z) {
     int xx = x + 128;
     int zz = z + 128;
     height = (float) imageData[xx * zz] * escala;
-
+    printf("size: %f\n",(float) imageData[xx * zz] );
     return height;
 }
 
@@ -71,36 +71,36 @@ void prepareData() {
     glEnableClientState(GL_VERTEX_ARRAY);
     glGenBuffers(1, buffers);
 
-    vertexB = (float *) malloc(256 * 256 * 9 * sizeof(float));
+    vertexB = (float *) malloc(256 * 256 * 6 * sizeof(float));
     int indice = 0;
-    float posicaox = -128;
-    float posicaoz = -128;
+    int posicaox = -128;
+    int posicaoz = -128;
 
 
-    for (int i = 0; i < th; ++i) {
+    for (int i = 0; i < th - 1 ; ++i) {
 
-        vertexB[indice] = posicaox;
-        vertexB[indice + 1] = h(posicaox, posicaoz);
-        vertexB[indice + 2] = posicaoz;
+        vertexB[indice] = (float)posicaox;
+        vertexB[indice + 1] = h(posicaox,posicaoz);
+        vertexB[indice + 2] = (float)posicaoz;
         indice += 3;
 
-        for (int j = 0; j < tw; ++j) {
-            vertexB[indice] = posicaox;
-            vertexB[indice + 1] = h(posicaox, posicaoz + 1);
-            vertexB[indice + 2] = posicaoz + 1;
+        for (int j = 0; j < tw -1 ; ++j) {
+            vertexB[indice] = (float)posicaox;
+            vertexB[indice + 1] = h(posicaox,posicaoz+1);
+            vertexB[indice + 2] = (float)posicaoz + 1;
             indice += 3;
 
-            vertexB[indice] = posicaox + 1;
-            vertexB[indice + 1] = h(posicaox + 1, posicaoz);
-            vertexB[indice + 2] = posicaoz;
+            vertexB[indice] = (float)posicaox + 1;
+            vertexB[indice + 1] = h(posicaox+1,posicaoz);
+            vertexB[indice + 2] = (float)posicaoz;
             indice += 3;
 
             posicaox++;
         }
 
-        vertexB[indice] = posicaox;
-        vertexB[indice + 1] = h(posicaox, posicaoz + 1);
-        vertexB[indice + 2] = posicaoz + 1;
+        vertexB[indice] = (float)posicaox;
+        vertexB[indice + 1] = h(posicaox,posicaoz+1);
+        vertexB[indice + 2] = (float)posicaoz + 1;
         indice += 3;
 
         posicaox = -128;
@@ -251,8 +251,9 @@ void init() {
     prepareData();
 
 // 	OpenGL settings
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 
