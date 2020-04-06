@@ -6,6 +6,7 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
+#include <time.h>
 #include <vector>
 
 #include <IL/il.h>
@@ -28,9 +29,15 @@ int alpha = 0, beta = 45, r = 50;
 unsigned int t, tw, th;
 unsigned char *imageData;
 
+float alturaMaxima = 100.0;
 int color = 0;
 float *vertexB;
 GLuint buffers[1];
+
+int numberTrees = 600;
+float *xTreePosicion;
+float *yTreePosicion;
+float *zTreePosicion;
 
 void changeSize(int w, int h) {
 
@@ -58,10 +65,30 @@ void changeSize(int w, int h) {
 
 float h(int x, int z) {
     float height = 0;
-    float escala = 30.0 / 255;
+    float escala = alturaMaxima / 255;
     int xx = x + 128;
     int zz = z + 128;
     height = (float) imageData[xx + (zz * tw)] * escala;
+    return height;
+}
+
+float hf(float x, float z) {
+    float height = 0;
+    int x1, x2, z1, z2;
+
+    x1 = floor(x);
+    x2 = x1 + 1;
+    float fx = x - x1;
+
+    z1 = floor(z);
+    z2 = z1 + 1;
+    float fz = z - z1;
+
+    float h_x1_z = h(x1, z1) * (1 - fz) + h(x1, z2) * fz;
+    float h_x2_z = h(x2, z1) * (1 - fz) + h(x2, z2) * fz;
+
+    height = h_x1_z * (1 - fx) + h_x2_z * fx;
+
     return height;
 }
 
@@ -123,6 +150,104 @@ void drawTerrain() {
 }
 
 
+float randomNumber(float lado) {
+    return ((float) rand()) / (float) RAND_MAX * (2 * lado) - lado;
+}
+
+void generateTranslationsTrees() {
+    xTreePosicion = (float *) malloc(numberTrees * sizeof(float));
+    zTreePosicion = (float *) malloc(numberTrees * sizeof(float));
+    yTreePosicion = (float *) malloc(numberTrees * sizeof(float));
+
+    float xrandom;
+    float zrandom;
+
+    for (int i = numberTrees; i >= 0; i--) {
+        xrandom = randomNumber(124);
+        zrandom = randomNumber(124);
+
+        while ((pow(xrandom, 2) + pow(zrandom, 2) - pow(50, 2)) < 0) {
+            xrandom = randomNumber(124);
+            zrandom = randomNumber(124);
+        }
+
+        xTreePosicion[i] = xrandom;
+        zTreePosicion[i] = zrandom;
+        yTreePosicion[i] = hf(xrandom, zrandom);
+    }
+}
+
+void trees() {
+    for (int i = 0; i < numberTrees; i++) {
+        glPushMatrix();
+
+        glTranslatef(xTreePosicion[i], yTreePosicion[i], zTreePosicion[i]);
+
+        glRotatef(-90, 1, 0, 0);
+
+        glColor3f(0.76, 0.58, 0.40);
+        glutSolidCone(1, 6, 4, 4);
+
+        glTranslatef(0, 0, 3);
+
+        glColor3f(0.04, 0.4, 0.14);
+        glutSolidCone(3, 8, 6, 8);
+
+        glPopMatrix();
+    }
+}
+
+
+void torus() {
+    glPushMatrix();
+    glColor3f(1, 0, 1);
+    glutSolidTorus(1, 4, 30, 30);
+    glTranslatef(0, 0, hf(0, 0));
+    glPopMatrix();
+}
+
+void teapots() {
+    clock_t atual = clock();
+
+    double sec = clock() / 250000.0 / 60.0;
+    double sec_rad = sec * 2.0 * M_PI;
+
+    double rotate = (360.0 / 8.0);
+    double raio = 15.0;
+
+    glPushMatrix();
+    glTranslatef(0, 2, 0);
+    glColor3f(0, 0, 1);
+
+    for (int i = 0; i < 8; i++) {
+        glPushMatrix();
+
+        glRotatef((double) -i * rotate - sec * 360.0, 0, 1.0f, 0);
+        glTranslatef(raio, 0, 0);
+
+        glutSolidTeapot(2);
+        glPopMatrix();
+    }
+
+
+    rotate = (360.0 / 16.0);
+    raio = 35.0;
+
+    glColor3f(1, 0, 0);
+
+    for (int i = 0; i < 16; i++) {
+        glPushMatrix();
+
+        glRotatef((double) -i * rotate + sec * 360.0, 0, 1.0f, 0);
+        glTranslatef(raio, 0, 0);
+
+        glutSolidTeapot(2);
+        glPopMatrix();
+    }
+    glPopMatrix();
+}
+
+
 void renderScene(void) {
 
     float pos[4] = {-1.0, 1.0, 1.0, 0.0};
@@ -136,10 +261,9 @@ void renderScene(void) {
               0.0f, 1.0f, 0.0f);
 
     drawTerrain();
-
-    // just so that it renders something before the terrain is built
-    // to erase when the terrain is ready
-    //glutWireTeapot(2.0);
+    torus();
+    trees();
+    teapots();
 
 // End of frame
     glutSwapBuffers();
@@ -239,7 +363,17 @@ void loadImage() {
     imageData = ilGetData();
 }
 
+void printInfo() {
+    printf("Vendor: %s\n", glGetString(GL_VENDOR));
+    printf("Renderer: %s\n", glGetString(GL_RENDERER));
+    printf("Version: %s\n", glGetString(GL_VERSION));
+}
+
 void init() {
+//  Helper for random numbers
+    srand(time(NULL));
+
+//  Init for Devil
     ilInit();
 
 // 	Load the height map "terreno.jpg"
@@ -248,10 +382,16 @@ void init() {
 // 	Build the vertex arrays
     prepareData();
 
+//  Build vectors for trees
+    generateTranslationsTrees();
+
+//  Info
+    printInfo();
+
 // 	OpenGL settings
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 
