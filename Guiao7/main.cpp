@@ -21,7 +21,11 @@
 #endif
 
 
-float camX = 00, camY = 30, camZ = 40;
+float camX = 0, camY = 5, camZ = 0;
+float angle = 0;
+float l1 = camX + sin(angle),
+      l3 = camZ + cos(angle);
+
 int startX, startY, tracking = 0;
 
 int alpha = 0, beta = 45, r = 50;
@@ -257,7 +261,7 @@ void renderScene(void) {
 
     glLoadIdentity();
     gluLookAt(camX, camY, camZ,
-              0.0, 0.0, 0.0,
+              l1, camY, l3,
               0.0f, 1.0f, 0.0f);
 
     drawTerrain();
@@ -271,8 +275,78 @@ void renderScene(void) {
 
 
 void processKeys(unsigned char key, int xx, int yy) {
+    switch (key){
+        case 'w':
+            camX = camX + (l1 - camX);
+            camZ = camZ + (l3 - camZ);
+            camY = 5 + hf(camX, camZ);
 
-// put code to process regular keys in here
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+//            l1 = l1 + (l1 - camX);
+//            l3 = l3 + (l3 - camZ);
+            break;
+
+        case 's':
+            camX = camX - (l1 - camX);
+            camZ = camZ - (l3 - camZ);
+            camY = 5 + hf(camX, camZ);
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+//            l1 = l1 + (l1 - camX);
+//            l3 = l3 + (l3 - camZ);
+            break;
+
+        case 'e':
+            angle -= 0.1;
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+            break;
+
+        case 'q':
+            angle += 0.1;
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+            break;
+
+        case 'd':
+            camX = camX - (0.1)*(camZ - l3);
+            camZ = camZ - (0.1)*(l1 + camX);
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+//            l1 = l1 + (0.1)*(camZ - l3);
+//            l3 = l3 + (0.1)*(l1 - camX);
+
+            camY = 5 + hf(camX, camZ);
+
+            break;
+
+        case 'a':
+            camX = camX + (0.1)*(camZ - l3);
+            camZ = camZ + (0.1)*(l1 + camX);
+
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+//            l1 = l1 + (0.1)*(camZ - l3);
+//            l3 = l3 + (0.1)*(l1 - camX);
+
+            camY = 5 + hf(camX, camZ);
+            break;
+
+        default:
+            break;
+    }
+
+    glutPostRedisplay();
 }
 
 
@@ -367,6 +441,7 @@ void printInfo() {
     printf("Vendor: %s\n", glGetString(GL_VENDOR));
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("Version: %s\n", glGetString(GL_VERSION));
+    puts("Foward: W\nBackward: S\nRotate Right: E\nRotate Left: Q\nLeft: A\nRight: D");
 }
 
 void init() {
@@ -412,8 +487,8 @@ int main(int argc, char **argv) {
 
 // Callback registration for keyboard processing
     glutKeyboardFunc(processKeys);
-    glutMouseFunc(processMouseButtons);
-    glutMotionFunc(processMouseMotion);
+//    glutMouseFunc(processMouseButtons);
+//    glutMotionFunc(processMouseMotion);
 
 
     init();
