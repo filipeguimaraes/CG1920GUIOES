@@ -24,7 +24,8 @@
 float camX = 0, camY = 5, camZ = 0;
 float angle = 0;
 float l1 = camX + sin(angle),
-      l3 = camZ + cos(angle);
+        l2 = camY,
+        l3 = camZ + cos(angle);
 
 int startX, startY, tracking = 0;
 
@@ -72,7 +73,9 @@ float h(int x, int z) {
     float escala = alturaMaxima / 255;
     int xx = x + 128;
     int zz = z + 128;
-    height = (float) imageData[xx + (zz * tw)] * escala;
+    if (xx <= 255 && xx >= 0 && zz <= 255 && zz >= 0)
+        height = (float) imageData[xx + (zz * tw)] * escala;
+    else printf("Excedeu os valores máximos!\n");
     return height;
 }
 
@@ -254,6 +257,8 @@ void teapots() {
 
 void renderScene(void) {
 
+
+
     float pos[4] = {-1.0, 1.0, 1.0, 0.0};
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -275,7 +280,7 @@ void renderScene(void) {
 
 
 void processKeys(unsigned char key, int xx, int yy) {
-    switch (key){
+    switch (key) {
         case 'w':
             camX = camX + (l1 - camX);
             camZ = camZ + (l3 - camZ);
@@ -283,7 +288,6 @@ void processKeys(unsigned char key, int xx, int yy) {
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
-
 //            l1 = l1 + (l1 - camX);
 //            l3 = l3 + (l3 - camZ);
             break;
@@ -295,31 +299,28 @@ void processKeys(unsigned char key, int xx, int yy) {
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
-
 //            l1 = l1 + (l1 - camX);
 //            l3 = l3 + (l3 - camZ);
             break;
 
         case 'e':
             angle -= 0.1;
-
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
             break;
 
         case 'q':
             angle += 0.1;
-
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
             break;
 
         case 'd':
-            camX = camX - (0.1)*(camZ - l3);
-            camZ = camZ - (0.1)*(l1 + camX);
+            camX = camX - 1;
+            //camZ = camZ - 1;
 
             l1 = camX + sin(angle);
-            l3 = camZ + cos(angle);
+            l3 = camZ - cos(angle);
 
 //            l1 = l1 + (0.1)*(camZ - l3);
 //            l3 = l3 + (0.1)*(l1 - camX);
@@ -329,9 +330,8 @@ void processKeys(unsigned char key, int xx, int yy) {
             break;
 
         case 'a':
-            camX = camX + (0.1)*(camZ - l3);
-            camZ = camZ + (0.1)*(l1 + camX);
-
+            camX = camX + 1;
+            camZ = camZ + 1;
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
@@ -340,11 +340,14 @@ void processKeys(unsigned char key, int xx, int yy) {
 //            l3 = l3 + (0.1)*(l1 - camX);
 
             camY = 5 + hf(camX, camZ);
+
             break;
 
         default:
             break;
     }
+
+
 
     glutPostRedisplay();
 }
@@ -441,7 +444,12 @@ void printInfo() {
     printf("Vendor: %s\n", glGetString(GL_VENDOR));
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("Version: %s\n", glGetString(GL_VERSION));
-    puts("Foward: W\nBackward: S\nRotate Right: E\nRotate Left: Q\nLeft: A\nRight: D");
+    puts("Foward: W\n"
+            "Backward: S\n"
+            "Rotate Right: E\n"
+            "Rotate Left: Q\n"
+            "Left: A\n"
+            "Right: D\n");
 }
 
 void init() {
@@ -487,8 +495,8 @@ int main(int argc, char **argv) {
 
 // Callback registration for keyboard processing
     glutKeyboardFunc(processKeys);
-//    glutMouseFunc(processMouseButtons);
-//    glutMotionFunc(processMouseMotion);
+    glutMouseFunc(processMouseButtons);
+    glutMotionFunc(processMouseMotion);
 
 
     init();
