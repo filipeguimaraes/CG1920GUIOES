@@ -1,5 +1,4 @@
 
-
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -9,7 +8,7 @@
 #include <time.h>
 #include <vector>
 
-#include <IL/il.h>
+#include "IL/il.h"
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -20,7 +19,7 @@
 
 #endif
 
-
+float normalizar = 0;
 float camX = 0, camY = 5, camZ = 0;
 float angle = 0;
 float l1 = camX + sin(angle),
@@ -43,6 +42,13 @@ int numberTrees = 600;
 float *xTreePosicion;
 float *yTreePosicion;
 float *zTreePosicion;
+
+
+struct Vetor {
+    float x;
+    float y;
+    float z;
+}u,v,k;
 
 void changeSize(int w, int h) {
 
@@ -100,7 +106,7 @@ float hf(float x, float z) {
 }
 
 void prepareData() {
-    glewInit();
+    //glewInit();
     glEnableClientState(GL_VERTEX_ARRAY);
     glGenBuffers(1, buffers);
 
@@ -278,6 +284,15 @@ void renderScene(void) {
 }
 
 
+struct Vetor crossProduct(struct Vetor u, struct Vetor v){
+    struct Vetor k;
+    k.x = u.y * v.z - v.y * u.z;
+    k.y = v.x * u.z - u.x * v.z;
+    k.z = u.x * v.y - v.x * u.y;
+    return k;
+}
+
+
 void processKeys(unsigned char key, int xx, int yy) {
     switch (key) {
         case 'w':
@@ -315,30 +330,29 @@ void processKeys(unsigned char key, int xx, int yy) {
             break;
 
         case 'd':
-            camX = camX  - l3 * sin(angle);
-            camZ = camZ  + l1 * cos(angle);
 
-            l1 = camX + sin(angle);
-            l3 = camZ + cos(angle);
+            u.x = l1 - camX; u.y = l2-camY; u.z = l3 - camZ;
+            v.x = 0.0f; v.y = 1.0f; v.z = 0.0f;
+            k = crossProduct(u, v);
 
-//            l1 = l1 + (0.1)*(camZ - l3);
-//            l3 = l3 + (0.1)*(l1 - camX);
+            //normalizar vetor k
+            normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
 
-            camY = 5 + hf(camX, camZ);
+            l1 -= k.x; l2 -= k.y;l3 -= k.z;
+            camX -= k.x; camY -= k.y; camZ -= k.z;
 
             break;
 
         case 'a':
-            camX = camX  + l3 * sin(angle);
-            camZ = camZ  - l1 * cos(angle);
+            u.x = l1 - camX; u.y = l2-camY; u.z = l3 - camZ;
+            v.x = 0.0f; v.y = 1.0f; v.z = 0.0f;
+            k = crossProduct(u, v);
 
-            l1 = camX + sin(angle);
-            l3 = camZ + cos(angle);
+            //normalizar vetor k
+            normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
 
-//            l1 = l1 + (0.1)*(camZ - l3);
-//            l3 = l3 + (0.1)*(l1 - camX);
-
-            camY = 5 + hf(camX, camZ);
+            l1 += k.x; l2 += k.y;l3 += k.z;
+            camX += k.x; camY += k.y; camZ += k.z;
 
             break;
 
