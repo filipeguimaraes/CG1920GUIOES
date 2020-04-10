@@ -339,7 +339,7 @@ void processKeys(unsigned char key, int xx, int yy) {
             normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
 
             l1 -= k.x; l2 -= k.y;l3 -= k.z;
-            camX -= k.x; camY -= k.y; camZ -= k.z;
+            camX -= k.x; camZ -= k.z; camY = 5 + hf(camX, camZ);
 
             break;
 
@@ -352,7 +352,7 @@ void processKeys(unsigned char key, int xx, int yy) {
             normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
 
             l1 += k.x; l2 += k.y;l3 += k.z;
-            camX += k.x; camY += k.y; camZ += k.z;
+            camX += k.x; camZ += k.z; camY = 5 + hf(camX, camZ);
 
             break;
 
