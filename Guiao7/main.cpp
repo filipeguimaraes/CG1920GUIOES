@@ -258,7 +258,6 @@ void teapots() {
 void renderScene(void) {
 
 
-
     float pos[4] = {-1.0, 1.0, 1.0, 0.0};
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -316,11 +315,11 @@ void processKeys(unsigned char key, int xx, int yy) {
             break;
 
         case 'd':
-            camX = camX - 1;
-            //camZ = camZ - 1;
+            camX = camX  - l3 * sin(angle);
+            camZ = camZ  + l1 * cos(angle);
 
             l1 = camX + sin(angle);
-            l3 = camZ - cos(angle);
+            l3 = camZ + cos(angle);
 
 //            l1 = l1 + (0.1)*(camZ - l3);
 //            l3 = l3 + (0.1)*(l1 - camX);
@@ -330,8 +329,8 @@ void processKeys(unsigned char key, int xx, int yy) {
             break;
 
         case 'a':
-            camX = camX + 1;
-            camZ = camZ + 1;
+            camX = camX  + l3 * sin(angle);
+            camZ = camZ  - l1 * cos(angle);
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
@@ -346,7 +345,6 @@ void processKeys(unsigned char key, int xx, int yy) {
         default:
             break;
     }
-
 
 
     glutPostRedisplay();
@@ -445,11 +443,11 @@ void printInfo() {
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("Version: %s\n", glGetString(GL_VERSION));
     puts("Foward: W\n"
-            "Backward: S\n"
-            "Rotate Right: E\n"
-            "Rotate Left: Q\n"
-            "Left: A\n"
-            "Right: D\n");
+         "Backward: S\n"
+         "Rotate Right: E\n"
+         "Rotate Left: Q\n"
+         "Left: A\n"
+         "Right: D\n");
 }
 
 void init() {
@@ -495,8 +493,8 @@ int main(int argc, char **argv) {
 
 // Callback registration for keyboard processing
     glutKeyboardFunc(processKeys);
-    glutMouseFunc(processMouseButtons);
-    glutMotionFunc(processMouseMotion);
+    //glutMouseFunc(processMouseButtons);
+    //glutMotionFunc(processMouseMotion);
 
 
     init();
