@@ -1,4 +1,5 @@
 
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -8,7 +9,7 @@
 #include <time.h>
 #include <vector>
 
-#include "IL/il.h"
+#include <IL/il.h>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -19,12 +20,11 @@
 
 #endif
 
-float normalizar = 0;
+
 float camX = 0, camY = 5, camZ = 0;
 float angle = 0;
 float l1 = camX + sin(angle),
-        l2 = camY,
-        l3 = camZ + cos(angle);
+      l3 = camZ + cos(angle);
 
 int startX, startY, tracking = 0;
 
@@ -42,13 +42,6 @@ int numberTrees = 600;
 float *xTreePosicion;
 float *yTreePosicion;
 float *zTreePosicion;
-
-
-struct Vetor {
-    float x;
-    float y;
-    float z;
-}u,v,k;
 
 void changeSize(int w, int h) {
 
@@ -79,9 +72,7 @@ float h(int x, int z) {
     float escala = alturaMaxima / 255;
     int xx = x + 128;
     int zz = z + 128;
-    if (xx <= 255 && xx >= 0 && zz <= 255 && zz >= 0)
-        height = (float) imageData[xx + (zz * tw)] * escala;
-    else printf("Excedeu os valores máximos!\n");
+    height = (float) imageData[xx + (zz * tw)] * escala;
     return height;
 }
 
@@ -106,7 +97,7 @@ float hf(float x, float z) {
 }
 
 void prepareData() {
-    //glewInit();
+    glewInit();
     glEnableClientState(GL_VERTEX_ARRAY);
     glGenBuffers(1, buffers);
 
@@ -220,8 +211,6 @@ void torus() {
 }
 
 void teapots() {
-    clock_t atual = clock();
-
     double sec = clock() / 250000.0 / 60.0;
     double sec_rad = sec * 2.0 * M_PI;
 
@@ -263,7 +252,6 @@ void teapots() {
 
 void renderScene(void) {
 
-
     float pos[4] = {-1.0, 1.0, 1.0, 0.0};
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -283,18 +271,43 @@ void renderScene(void) {
     glutSwapBuffers();
 }
 
+void processSpecialKeys(int key_code, int xx, int yy) {
 
-struct Vetor crossProduct(struct Vetor u, struct Vetor v){
-    struct Vetor k;
-    k.x = u.y * v.z - v.y * u.z;
-    k.y = v.x * u.z - u.x * v.z;
-    k.z = u.x * v.y - v.x * u.y;
-    return k;
+    //permite ter explorer mode camera
+    /*
+    if (key_code == GLUT_KEY_LEFT) {
+        angle += 0.1;
+
+    }
+    if (key_code == GLUT_KEY_RIGHT) {
+        angle -= 0.1;
+
+    }
+    if (key_code == GLUT_KEY_DOWN) {
+        camX = camX - (l1 - camX);
+        camZ = camZ - (l3 - camZ);
+        l1 = l1 + (l1 - camX);
+        l3 = l3 + (l3 - camZ);
+    }
+    if (key_code == GLUT_KEY_UP) {
+        camX = camX + (l1 - camX);
+        camZ = camZ + (l3 - camZ);
+        l1 = l1 + (l1 - camX);
+        l3 = l3 + (l3 - camZ);
+    }
+
+    l1 = camX + sin(angle);
+    l3 = camZ + cos(angle);
+
+
+    camY = 5 + hf(camX, camZ);
+
+    glutPostRedisplay();
+     */
 }
 
-
 void processKeys(unsigned char key, int xx, int yy) {
-    switch (key) {
+    switch (key){
         case 'w':
             camX = camX + (l1 - camX);
             camZ = camZ + (l3 - camZ);
@@ -302,6 +315,7 @@ void processKeys(unsigned char key, int xx, int yy) {
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
+
 //            l1 = l1 + (l1 - camX);
 //            l3 = l3 + (l3 - camZ);
             break;
@@ -313,53 +327,74 @@ void processKeys(unsigned char key, int xx, int yy) {
 
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
+
 //            l1 = l1 + (l1 - camX);
 //            l3 = l3 + (l3 - camZ);
             break;
 
         case 'e':
             angle -= 0.1;
+
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
             break;
 
         case 'q':
             angle += 0.1;
+
             l1 = camX + sin(angle);
             l3 = camZ + cos(angle);
             break;
 
         case 'd':
 
-            u.x = l1 - camX; u.y = l2-camY; u.z = l3 - camZ;
-            v.x = 0.0f; v.y = 1.0f; v.z = 0.0f;
-            k = crossProduct(u, v);
 
-            //normalizar vetor k
-            normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
+            l1 = camX + sin(angle-M_PI/2);
+            l3 = camZ + cos(angle-M_PI/2);
 
-            l1 -= k.x; l2 -= k.y;l3 -= k.z;
-            camX -= k.x; camZ -= k.z; camY = 5 + hf(camX, camZ);
+            camX = camX + (l1 - camX);
+            camZ = camZ + (l3 - camZ);
+
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+//            camX = camX - (0.1)*(camZ - l3);
+//            camZ = camZ - (0.1)*(l1 + camX);
+//            l1 = camX + sin(angle);
+//            l3 = camZ + cos(angle);
+
+//            l1 = l1 + (0.1)*(camZ - l3);
+//            l3 = l3 + (0.1)*(l1 - camX);
+
+            camY = 5 + hf(camX, camZ);
 
             break;
 
         case 'a':
-            u.x = l1 - camX; u.y = l2-camY; u.z = l3 - camZ;
-            v.x = 0.0f; v.y = 1.0f; v.z = 0.0f;
-            k = crossProduct(u, v);
 
-            //normalizar vetor k
-            normalizar = k.x; k.x /= normalizar; k.y /= normalizar; k.z /= normalizar;
+            l1 = camX + sin(angle+M_PI/2);
+            l3 = camZ + cos(angle+M_PI/2);
 
-            l1 += k.x; l2 += k.y;l3 += k.z;
-            camX += k.x; camZ += k.z; camY = 5 + hf(camX, camZ);
+            camX = camX + (l1 - camX);
+            camZ = camZ + (l3 - camZ);
 
+            l1 = camX + sin(angle);
+            l3 = camZ + cos(angle);
+
+
+            //camX = camX + (0.1)*(camZ - l3);
+            //camZ = camZ + (0.1)*(l1 + camX);
+            //l1 = camX + sin(angle);
+            //l3 = camZ + cos(angle);
+
+
+
+            camY = 5 + hf(camX, camZ);
             break;
 
         default:
             break;
     }
-
 
     glutPostRedisplay();
 }
@@ -456,12 +491,7 @@ void printInfo() {
     printf("Vendor: %s\n", glGetString(GL_VENDOR));
     printf("Renderer: %s\n", glGetString(GL_RENDERER));
     printf("Version: %s\n", glGetString(GL_VERSION));
-    puts("Foward: W\n"
-         "Backward: S\n"
-         "Rotate Right: E\n"
-         "Rotate Left: Q\n"
-         "Left: A\n"
-         "Right: D\n");
+    puts("Foward: W\nBackward: S\nRotate Right: E\nRotate Left: Q\nLeft: A\nRight: D");
 }
 
 void init() {
@@ -500,15 +530,18 @@ int main(int argc, char **argv) {
     glutCreateWindow("CG@DI-UM");
 
 
-// Required callback registry 
+// Required callback registry
     glutDisplayFunc(renderScene);
     glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
 
-// Callback registration for keyboard processing
+
+    // Callback registration for keyboard processing
     glutKeyboardFunc(processKeys);
-    //glutMouseFunc(processMouseButtons);
-    //glutMotionFunc(processMouseMotion);
+//    glutMouseFunc(processMouseButtons);
+//    glutMotionFunc(processMouseMotion);
+
+    glutSpecialFunc(processSpecialKeys);
 
 
     init();
