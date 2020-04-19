@@ -208,7 +208,7 @@ void renderScene(void) {
 
     glMultMatrixf((float *) m);
     // ...
-
+    //glutWireCone(0.5,0.5,10,10);
     glutWireTeapot(0.1);
     glutSwapBuffers();
     t += 0.0001;
