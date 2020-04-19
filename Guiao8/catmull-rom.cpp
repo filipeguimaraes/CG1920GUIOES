@@ -172,17 +172,19 @@ void renderCatmullRomCurve() {
 }
 
 
+float up[3] = {0, 1, 0};
+
+
 void renderScene(void) {
 
     static float t = 0;
-    float up[3] = {0, 1, 0};
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
     gluLookAt(camX, camY, camZ,
               0.0, 0.0, 0.0,
-              up[0], up[1], up[2]);
+              0.0, 1.0, 0.0);
 
     renderCatmullRomCurve();
 
@@ -191,13 +193,13 @@ void renderScene(void) {
     float deriv[3];
     getGlobalCatmullRomPoint(t, pos, deriv);
 
-    normalize((float *) deriv);
+    normalize(deriv);
 
     float derivCross[3];
-    cross((float *) deriv, (float *) up, (float *) derivCross);
-    normalize((float *) derivCross);
-    cross((float *) derivCross, (float *) deriv, (float *) up);
-    normalize((float *) up);
+    cross(deriv, up, derivCross);
+    normalize(derivCross);
+    cross(derivCross, deriv, up);
+    normalize(up);
 
     float m[4][4] = {{deriv[0],      deriv[1],      deriv[2],      0},
                      {up[0],         up[1],         up[2],         0},
@@ -209,7 +211,7 @@ void renderScene(void) {
 
     glutWireTeapot(0.1);
     glutSwapBuffers();
-    t += 0.00001;
+    t += 0.0001;
 }
 
 
