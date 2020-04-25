@@ -81,7 +81,7 @@ void prepareCilinder(float height, float radius, int sides) {
 		v[vertex*3 + 2] = radius * cos( (i+1) * delta);
 
 		// body
-		// triângulo 1
+		// triï¿½ngulo 1
 		vertex++;
 		v[vertex*3 + 0] = radius * sin( (i+1) * delta);
 		v[vertex*3 + 1] = height /2.0f;
@@ -266,4 +266,3 @@ int main(int argc, char **argv) {
 	
 	return 1;
 }
-
