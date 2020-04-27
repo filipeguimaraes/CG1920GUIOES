@@ -146,18 +146,18 @@ void prepareCilinder(float height, float radius, int sides) {
         // top
         // central point
         normalB[normalSize * 3 + 0] = 0.0f;
-        normalB[normalSize * 3 + 1] = 0;
+        normalB[normalSize * 3 + 1] = 1;
         normalB[normalSize * 3 + 2] = 0.0f;
 
         normalSize++;
-        normalB[normalSize * 3 + 0] = radius * sin(i * delta);
-        normalB[normalSize * 3 + 1] = 0;
-        normalB[normalSize * 3 + 2] = radius * cos(i * delta);
+        normalB[normalSize * 3 + 0] = 0;
+        normalB[normalSize * 3 + 1] = 1;
+        normalB[normalSize * 3 + 2] = 0;
 
         normalSize++;
-        normalB[normalSize * 3 + 0] = radius * sin((i + 1) * delta);
-        normalB[normalSize * 3 + 1] = 0;
-        normalB[normalSize * 3 + 2] = radius * cos((i + 1) * delta);
+        normalB[normalSize * 3 + 0] = 0;
+        normalB[normalSize * 3 + 1] = 1;
+        normalB[normalSize * 3 + 2] = 0;
 
         // body
         // triangulo 1
@@ -196,18 +196,18 @@ void prepareCilinder(float height, float radius, int sides) {
         // central point
         normalSize++;
         normalB[normalSize * 3 + 0] = 0.0f;
-        normalB[normalSize * 3 + 1] = 0;
+        normalB[normalSize * 3 + 1] = -1;
         normalB[normalSize * 3 + 2] = 0.0f;
 
         normalSize++;
-        normalB[normalSize * 3 + 0] = radius * sin((i + 1) * delta);
-        normalB[normalSize * 3 + 1] = 0;
-        normalB[normalSize * 3 + 2] = radius * cos((i + 1) * delta);
+        normalB[normalSize * 3 + 0] = 0;
+        normalB[normalSize * 3 + 1] = -1;
+        normalB[normalSize * 3 + 2] = 0;
 
         normalSize++;
-        normalB[normalSize * 3 + 0] = radius * sin(i * delta);
-        normalB[normalSize * 3 + 1] = 0;
-        normalB[normalSize * 3 + 2] = radius * cos(i * delta);
+        normalB[normalSize * 3 + 0] = 0;
+        normalB[normalSize * 3 + 1] = -1;
+        normalB[normalSize * 3 + 2] = 0;
 
         normalSize++;
     }
