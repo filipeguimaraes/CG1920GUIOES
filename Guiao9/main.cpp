@@ -214,6 +214,7 @@ void prepareCilinder(float height, float radius, int sides) {
     normalCount = normalSize;
 
     glGenBuffers(2, buffers);
+
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexCount * 3, v, GL_STATIC_DRAW);
 
@@ -221,7 +222,7 @@ void prepareCilinder(float height, float radius, int sides) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * normalCount * 3, normalB, GL_STATIC_DRAW);
 
     free(v);
-
+    free(normalB);
 }
 
 
@@ -231,7 +232,6 @@ void drawCilinder() {
     glVertexPointer(3, GL_FLOAT, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    // normals always have 3 components
     glNormalPointer(GL_FLOAT, 0, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
@@ -241,6 +241,7 @@ void drawCilinder() {
 void renderScene(void) {
 
     float pos[4] = {1.0, 1.0, 1.0, 0.0};
+    //glRotatef(45, 0,1,0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 
