@@ -437,7 +437,7 @@ int main(int argc, char **argv) {
 #endif
 
     initGL();
-    texIDCylinder = loadTexture("Oil_Drum001h.jpg");
+    texIDCylinder = loadTexture("Cocacola.jpg");
     texIDFloor = loadTexture("Concrete.jpg");
 // entrar no ciclo do GLUT 
     glutMainLoop();
